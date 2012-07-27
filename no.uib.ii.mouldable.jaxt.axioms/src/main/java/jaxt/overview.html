@@ -1,0 +1,370 @@
+<html>
+<head>
+  <title>JAxT example overview</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head>
+<body>
+
+<p>
+  This is an example of JAxT specifications and useage prepared for testing
+  with JUnit. The JAxT approach allows us to systematically write properties
+  as axioms, axioms which are used as basis for systematic JUnit testing.
+  We thereby shift the testing focus from individual test cases, to more
+  general properties of the software under development. Hopefully this will
+  give better and more systematic support for test-oriented software
+  development methods, see the wikipedia 
+  <a href="http://en.wikipedia.org/wiki/List_of_software_development_philosophies">List of software development philosophies</a> 
+  for a superficial overview of these and other software design methods.
+</p>
+  
+<p>
+  JAxT can also be thought of as a merging between 
+  <a href="http://en.wikipedia.org/wiki/Design_by_contract">design by contract</a>
+  and systematic testing: the contract is formalised by the axioms associated
+  with interfaces and classes, while JAxT generates JUnit tests for checking
+  adherence to the contract.
+</p>
+
+<h2>Writing a contract</h2>
+
+<p>
+  An <i>immediate contract</i> is a class or an interface <tt>X</tt> together with a 
+  collection of axioms. The axioms are written in (one or more) abstract public
+  classes <tt>XA</tt>, which indirectly implements the interface <tt>jaxt.framework.Axioms&lt;X&gt;</tt>,
+  via one of
+  <ul>
+  <li><tt>RequiredAxioms&lt;X&gt;</tt> for required axioms for this and all subtypes,
+  </li>
+  <li><tt>OptionalAxioms&lt;X&gt;</tt> for axioms for this type but optional for subtypes, and
+  </li>
+  <li><tt>SubClassAxioms&lt;X&gt;</tt> for required axioms for all subtypes.
+  </li>
+  </ul>
+  Given optional axioms <tt>XA</tt>, the marker <tt>AxiomSet&lt;XA&gt;</tt> indicates that <tt>XA</tt> are to be acitivated.
+</p>  
+
+<p>
+The marker <tt>GlobalAxioms&lt;X&gt;</tt> is used to indicate that the axioms pertain to the entire data set.
+Used for quality checking of data sets or methods with statistically defined requirements.
+</p>
+
+<p>
+  These interfaces are empty, their only purpose is
+  to allow the JAxT tool to identify that a class <tt>XA</tt> is an axiom 
+  class. By letting <tt>XA</tt> extend or implement <tt>X</tt>, JAxT can
+  easily figure out which axioms are declared for <tt>X</tt>. The axioms
+  may be grouped in several different classes <tt>XA</tt>, e.g., separating
+  absolute requirements from recommended behaviour. Consider the method
+  <tt>java.lang.Comparable&lt;T&gt;.compareTo(T)</tt> - it is required 
+  to be an equivalence relation, but it is only recommended that this
+  equivalence relation is the same as the equivalence relation given by
+  <tt>java.lang.Object.equals(Object)</tt>.
+</p>
+
+<p>
+  Each axiom in a class <tt>XA</tt> is a <tt>static public void</tt> method. 
+  An axiom may have free variables, which are coded
+  as formal arguments to the method. Then the axiom may do any computation
+  needed to check a property on its arguments. The checking is normally
+  done using assertions from the <tt>junit.framework.Assertions</tt> class.
+  It is normal to statically import all the assertion methods from this
+  class for <tt>XA</tt>. Thus the axioms are formally written in a 
+  Java/JUnit specific logic. Pragmatically the assertion language lets us
+  check for 
+  
+  <ul>
+  <li>
+    equality using <tt>assertEquals(Object, Object)</tt>,
+    which checks that both objects are equal with respect to the
+    method <tt>java.lang.Object.equals(Object)</tt>.
+   </li>
+  <li>
+    object identity using <tt>assertSame(Object, Object)</tt>,
+    which checks that two object arguments refer to the same 
+    <tt>Object</tt>.
+  </li>
+  <li> 
+    satisfaction using <tt>assertTrue(boolean)</tt>,
+    which checks that the boolean expression is true.
+  </li>
+  <li>contradiction using <tt>assertFalse(boolean)</tt>,
+   which checks that the boolean expression is true.
+  </li>
+  <li>
+    inconsistency using <tt>assertFail()</tt>,
+    which claims failure of the axiom - and is used in the
+    checking of exceptions, see e.g. 
+    <tt>jaxt.java.lang.CompareableAxioms.compareToProperty6strongSymmetry(Comparable, Comparable)</tt>.
+  </li>
+  </ul>
+
+<p>  
+  All of these assertions also exist for the Java primitive types.
+</p>
+  
+<p>
+  By convention an axiom class <tt>XA</tt>, where possible, should
+  reside in the same package as <tt>X</tt>. In the current release of
+  JAxT, this is a requirement, and there is only one exception:
+  Axioms for the standard Java classes and interfaces are placed in 
+  <tt>jaxt.java.lang</tt> etc.
+</p>
+
+<p>
+  The class <tt>X</tt> should of course satisfy all its immediate
+  contracts <tt>XA</tt>, but also all contracts for any class it
+  inherits from or it implements, either directly or indirectly.
+  Thus any class in Java will need to satisfy the requirments on
+  <tt>java.lang.Object</tt>, since every Java class inherits from
+  it, either directly or indirectly.
+</p>
+
+<h2>Generating JAxT tests</h2>
+
+<p>
+  When using JAxT within Eclipse, it works in much in the same way as
+  generating JUnit tests from within Eclipse.
+</p>
+
+<p>
+  First you go to the Package Explorer and select the Java file 
+  <tt>X.java</tt> that contains the class <tt>X</tt> you want to test.
+  Then you right-click on your selection and select <tt>Mould->Create Tests</tt>
+  from the popup menu (towards the bottom part of the menu).
+</p>
+
+<!--
+<p>
+  This should give you a "JAxT Test Case" panel where you may choose
+  the name of the test class, XTest, etc. The chosen defaults will be OK
+  in almost all cases. Press the "Next" button when you are finished.
+</p>
+
+<p>
+  Now you will get a <tt>JAxT Test Methods</tt> window. This lists all 
+  contracts found for <tt>X</tt>. Tick the contracts you want to check
+  for. You may also tick on or off individual axioms from the available
+  sublists. You may also choose to create a completely new test class
+  (removing any old test class with the chosen name for X), or incrementally
+  modify the existing test class. Choose the latter option if you have
+  modified your previous test class, e.g., by computing test data sets
+  in the setUp() method. Press the <tt>Finish</tt> button when you are
+  ready.
+</p>
+-->
+
+<p>
+  You will now find the file <tt>XTest.java</tt> alongside with the 
+  class <tt>X.java</tt> in your package. Following the defaults,
+  <tt>XTest</tt> will be a functioning JUnit test class, except 
+  possibly for missing test data sets. See the next section on how to
+  add these.
+</p>
+
+<p>
+  Additionally, for every type T in every axiom beloning to X, a test
+  generator class <tt>TTestGenerator</tt> will be generated containing
+  a method <tt>createTestSet()</tt>. By filling in this method, you
+  provide the necessary test tests for that type. 
+</p>
+
+<p>
+  The generated JUnit test case will be a <tt>public class XTest</tt>
+  inheriting from <tt>junit.framework.TestCase</tt> and the file has
+  all necessary imports. The test class itself will normally consist
+  of the following.
+</p>
+
+<ul>
+  <li>
+    Constructor <tt>public XTest(String name)</tt> as used by JUnit.
+  </li>
+  <li>
+    A fixture consisting of the methods <tt>setUp()</tt> and <tt>tearDown()</tt>.
+    The method <tt>setUp()</tt> is called by JUnit before each test
+    method, and <tt>tearDown()</tt> is called after each test method.
+    The <tt>setUp()</tt> method is typically where the test data are
+    computed.
+  </li>
+  <li>
+    A test method for each axiom. The test method will call the axiom
+    inside a nested loop which runs through the data set for each
+    argument of the axiom. So an axiom <tt>a1(Object, int)</tt> will
+    be inside a double loop, running through all elements of the test
+    data sets <tt>dataObject</tt> and <tt>dataInt</tt>.
+    
+    An axiom <tt>a2()</tt>, with no free variables, will not need any
+    data loop and just be called as is.
+  </li>
+  
+  <li>
+    For every argument type <tt>T</tt>, e.g., <tt>Object</tt>, 
+    <tt>int</tt>, <tt>X</tt>, <tt>Comparable</tt>, in the collection
+    of axioms, there will be declared a data set <tt>T[] dataT</tt>, 
+    e.g., <tt>Object[] dataObject</tt>, <tt>int[] dataInt</tt>, 
+    <tt>X[] dataX</tt>, <tt>Comparable[] dataComparable</tt>.
+    
+    These attribute variables need not be arrays, but must be a 
+    collection type with an iterator on the corresponding element
+    type.
+  </li>    
+
+  <li>
+    For each declared data set <tt>dataT</tt>, the <tt>setUp()</tt> 
+    method will be extended with the initialisation of this data.
+  </li>
+
+  <li>
+    If the data is for <tt>X</tt> or a supertype of <tt>X</tt>, a call
+    to the (fictive) static method <tt>XTestGenerator.createTestSet()</tt> will
+    be inserted. For instance, <tt>dataObject = XTestGenerator.createTestSet()</tt>,
+    <tt>dataX = XTestGenerator.createTestSet()</tt>, 
+    <tt>dataComparable = XTestGenerator.createTestSet()</tt>.
+  </li>
+  
+  <li> 
+    If the data is for <tt>Y</tt>, a subtype or unrelated type for <tt>X</tt>,
+    a call to the (fictive) static method YTestGenerator.createTestSet()</tt> will
+    be inserted. For instance, <tt>dataY = YTestGenerator.generateTestData()</tt>.
+  </li>
+</ul>
+
+<!--      
+  <li>
+    If the data is for a primitive Java type, a data array of size ten will be created,
+loop that inserts random values into this array will be generated.
+For instance, for int[] dataInt, the setUp method will contain the code
+<pre>
+public void setUp(){
+  Random g = new Random();
+  ..
+  dataInt = new int[10];
+  for(int i=0; i<dataInt.length; i++)
+    dataInt[i] = g.nextInt();
+  ..
+}
+</pre>
+The necessary import java.util.Random will be added.
+</li>
+-->
+
+<p>
+  You should never modify the code in a generated test, such as 
+  <tt>XTest</tt>. The current version of JAxT will unconditionally
+  overwrite your changes next time you generate the tests.
+</p>
+
+<p>
+  What you must modify, however, are the <tt>XTestGenerator</tt>
+  classes. For each argument type T of every axiom tested in the 
+  <tt>XTest</tt> a <tt>TTestGenerator</tt> class will be generated
+  with a stub method <tt>T[] createTestSet()</tt>. You should fill
+  in this method to provide an array (or you can change the return
+  type to a <tt>Collection</tt>) of testable objects of type 
+  <tt>T</tt>.
+  JAxT will never overwrite an existing <tt>TTestGenerator</tt>  
+  so you may modify it freely.
+</p>
+
+<!--
+  If you are doing an incremental modification of an existing XTest
+  class, new tests and data sets will be added.
+Test methods not needed will be removed.
+Arguments requiring new test data will induce those declarations.
+If all tests needing a specific data item are removed, the declaration and inititalisation of this item will be commented out.
+If such tests later are added, you may then either use the freshly generated test data declarations,
+or you may delete these an uncomment the old ones if you prefer using them. 
+-->
+
+
+<h2>Writing test data sets</h2>
+
+If you do not provide the test file with your data sets, 
+the tests will be run on empty data sets, 
+meaning that most of the probably will pass without anything being tested.
+
+In order to provide test sets you should, for every type <tt>T</tt>, modify 
+the <tt>createTestSet</tt> test generator stubs in the <tt>XTestGenerator</tt> classes.
+
+<p>
+The simplest extension is to simply return a few test cases in place of the original empty set of cases.
+For example, consider a class <tt>X</tt> with a default constructor and a constructor that accepts
+  an integer argument. In the corresponding <tt>XTestGenerator</tt>
+  class you may want to implement the 
+  <tt>createTestSet()</tt> method like this: 
+</p>
+
+<pre>
+  X[] createTestSet() {
+    return new X[] { new X(), new X(100), new X(0), 
+                     new X(-1), new X(1), new X(100), 
+                     new X(100000), new X(), new X(100) };
+  }
+</pre>
+
+This gives a test data set of 9 elements.
+Note that we have repeated some of the values several times in order that, 
+among others transitivty axioms, will get cases which fully exercises them.
+</p>
+
+<p>
+With the JAxT approach it is easy to provide much larger data sets, e.g., using the Java random number generator.
+Assume we have an axiom with free variables of type <tt>int</tt>.
+The JAxT generated test will then have an <tt>intTestGenerator</tt> class with a stub <tt>createTestSet()</tt>.
+We can easily let it provide the tests with 100 randomly chosen integers between 1 and 50 
+(note the oversampling in order to get several equal values).
+<pre>
+  int[] createTestSet() {
+    Random g = new Random();
+    int[] dataInt = new int[100];
+    for(int i=0; i<dataInt.length; i++)
+      dataInt[i] = g.nextInt(50)+1;
+    return dataInt;
+  }
+</pre>
+Remember to add the necessary import java.util.Random.
+</p>
+
+<p>
+Of course this technique can also be used for the class <tt>X</tt> 
+if it needs a larger test data set.
+It can then be useful to place a method computing the data set in the class <tt>X</tt>
+itself, and just call this method in the <tt>XTestGenerator</tt> class.
+This has been done in the package <tt>jaxt.example.position</tt>,
+where the static method <tt>Position.positionDataSet()</tt> creates 200
+Position values for use in the tests.
+</p>
+
+<p>
+Be warned that large data sets for axioms with many free variables takes its time to check.
+A data set of 500 elements may be used to check axioms of 1-2 free variables in a few seconds.
+But applying that test set to an axiom with four free variables, e.g. for checking the congruence of a binary operation like
+<tt>jaxt.examples.position.Position.plus(Position)</tt>, we get 500^4 = 62 500 000 000 tests.
+An overnight job for any reasonable computers.
+</p>
+
+<p>
+In general you can also change the return 
+  type of a <tt>TTestGenerator.createTestSet()</tt> from the array type <tt>T[]</tt> to a <tt>Collection</tt>) of testable objects of type 
+  <tt>T</tt>. Make certain your collection class has iterators of the appropriate element type <tt>T</tt>.
+</p>
+
+<p>
+  The <tt>TTestGenerator.createTestSet()</tt> method may require
+  support from additional generator methods in <tt>T</tt>. It is
+  recommended that these be declared with package visibility,
+  so that they do not come part of the external interface of 
+  <tt>T</tt> unless you explicitly think these could be useful.
+</p>
+
+  
+
+<p>
+@see jaxt.framework
+@see jaxt.java.lang
+@see jaxt.examples
+@author Magne Haveraaen & Karl Trygve Kalleberg, 2007
+</p>
+
+</body>
+</html>

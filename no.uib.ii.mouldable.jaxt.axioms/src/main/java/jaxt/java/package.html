@@ -1,0 +1,41 @@
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<html>
+<head>
+<title>JAxT java axioms</title>
+</head>
+<body>
+This is a collection JAxT axioms from the Java standard packages, 
+based on the <a href="http://java.sun.com/j2se/1.5.0/docs/api/">Java 5.0 API</a>.
+<p>
+For each class and interface <tt>X</tt> the axioms are separated into 
+<ul>
+<li>
+<tt>XAxioms implements RequiredAxioms&lt;X&gt;</tt> for axioms formulated from absolute requirements in the documentation,
+e.g., that the equals method from <tt>Object</tt> should be an equivalence relation.
+</li>
+<li>
+<tt>XAxiomsStronglyRecommended implements OptionalAxioms&lt;X&gt;</tt> for axioms formulated from strong recommendations in the documentation,
+e.g., that a class's natural order is consistent with its equals method (from <tt>Comparable</tt>).
+</li>
+<li>
+<tt>XAxiomsRecommended implements OptionalAxioms&lt;X&gt;</tt> for axioms formulated from recommendations in the documentation,
+e.g., the properties for the clone method.
+</li>
+<li>
+<tt>XAxiomsProjectY implements OptionalAxioms&lt;X&gt;</tt> for axioms formulated from project specific recommendations,
+e.g., that the equals method should be a congruence relation (for some classes).
+We have included this example in <tt>jaxt.java.lang.ComparableAxiomsProject</tt> for the <tt>Comparable</tt> interface.
+</li>
+<li>
+<tt>XAxiomsGlobalRecommendations implements GlobalAxioms&lt;X&gt;</tt> for axioms formulated from global properties on data,
+e.g., that hashCode values should be well distributed, see <tt>Object</tt>.
+</li>
+</ul>
+Only data-oriented axioms have been formulated.
+Thus thread-related requirements have not been captured.
+<p>
+See the jaxt overview file for information about declaring and using axiom classes.
+<p>
+@author Magne Haveraaen & Karl Trygve Kalleberg, 2007
+</body>
+</html>

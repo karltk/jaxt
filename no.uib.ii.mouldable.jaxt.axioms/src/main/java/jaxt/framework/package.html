@@ -1,0 +1,25 @@
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<html>
+<head>
+<title>JAxT framework support</title>
+</head>
+<body>
+The package contains JAxT support interfaces, 
+which serve as markers for the JAxT tool.
+<p>
+Any class implementing a subtype of <code>Axioms</code> are considered to contain axioms.
+This is necessary for the JAxT support system in identifying axiom classes,
+but also gives the user an easy way to recognise them as well:
+looking at the javadoc generated list of all classes implementing the interface 
+<code>jaxt.framework.Axioms</code> is an easy way to check if all axiom classes have been declared.
+</p>
+<p>
+The marker <code>AxiomSet&lt;XA&gt;</code> indicates the the optional axioms in <code>XA</code> should be satisfied.
+</p>
+<p>
+See the jaxt overview file for information about declaring and using axiom classes.
+</p>
+<p>
+@author Magne Haveraaen & Karl Trygve Kalleberg, 2007-2008
+</body>
+</html>

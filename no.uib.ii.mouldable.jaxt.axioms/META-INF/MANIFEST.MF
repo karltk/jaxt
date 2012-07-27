@@ -1,0 +1,17 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Mouldable JAxT Axioms Library
+Bundle-SymbolicName: no.uib.ii.mouldable.jaxt.axioms;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Export-Package: jaxt,
+ jaxt.framework,
+ jaxt.java,
+ jaxt.java.lang,
+ jaxt.java.util
+Require-Bundle: org.junit,
+ org.eclipse.jdt.junit,
+ org.eclipse.jdt.junit.runtime,
+ org.eclipse.core.runtime;bundle-version="3.4.0"
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-Vendor: Mouldable Group, Dept of Informatics, UiB
+Import-Package: org.eclipse.core.runtime
