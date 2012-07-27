@@ -6,11 +6,7 @@
 
 package no.uib.ii.mouldable.jaxt.runtime.generators;
 
-public class DoubleGenerator implements Generator<Double> {
+public interface TypeAwareGenerator<T> extends Generator<T> {
 
-    @Override
-    public Double generate() {
-        return Math.random();
-    }
-
+    Class<T> getType();
 }

@@ -6,24 +6,24 @@
 
 package no.uib.ii.mouldable.jaxt.runtime;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.Map;
 import no.uib.ii.mouldable.jaxt.runtime.generators.BooleanGenerator;
+import no.uib.ii.mouldable.jaxt.runtime.generators.DefaultObjectGenerator;
 import no.uib.ii.mouldable.jaxt.runtime.generators.DoubleGenerator;
 import no.uib.ii.mouldable.jaxt.runtime.generators.EnumGenerator;
 import no.uib.ii.mouldable.jaxt.runtime.generators.Generator;
 import no.uib.ii.mouldable.jaxt.runtime.generators.IntegerGenerator;
 import no.uib.ii.mouldable.jaxt.runtime.generators.LongGenerator;
+import no.uib.ii.mouldable.jaxt.runtime.generators.SpecificObjectGenerator;
 
-public class JaxtMockery {
+public class JaxtMockery implements Mockery {
 
     private final Map<Class<?>, Generator<?>> mockers = new HashMap<Class<?>, Generator<?>>();
     private EnumGenerator enumMocker;
+    private DefaultObjectGenerator objectMocker;
 
     public JaxtMockery() {
         mockers.put(long.class, new LongGenerator());
@@ -45,39 +45,42 @@ public class JaxtMockery {
             }
         });
         enumMocker = new EnumGenerator();
+        objectMocker = new DefaultObjectGenerator(this);
     }
 
+    @Override
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public <T> T mock(final Class<T> clazz) {
-        System.out.println(clazz);
         if (mockers.containsKey(clazz))
             return (T) mockers.get(clazz).generate();
         if (Enum.class.isAssignableFrom(clazz)) {
             return (T) enumMocker.generate((Class) clazz);
         }
-        for (Constructor<?> c : clazz.getConstructors()) {
-            try {
-                Collection<Object> args = new LinkedList<Object>();
-                for (Class<?> param : c.getParameterTypes()) {
-                    Object val = mock(param);
-                    args.add(val);
-                }
-                System.out.println(c.getName() + args);
-                return (T) c.newInstance(args.toArray(new Object[0]));
-            } catch (IllegalArgumentException e) {
-                e.printStackTrace();
-            } catch (InstantiationException e) {
-                e.printStackTrace();
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            } catch (InvocationTargetException e) {
-                e.printStackTrace();
-            }
+        if (clazz.isInterface()) {
+            throw new IllegalArgumentException("Cannot instantiate interface '" + clazz.getName()
+                    + "' because no concrete class has been registered for it");
         }
-        return null;
+        return objectMocker.generate(clazz);
     }
 
     public <T> void registerGenerator(final Class<T> clazz, final Generator<T> integerGenerator) {
         mockers.put(clazz, integerGenerator);
+    }
+
+    public <T> SpecificObjectGenerator<T> generate(final Class<T> clazz) {
+        SpecificObjectGenerator<T> r = new SpecificObjectGenerator<T>(this, clazz);
+        mockers.put(clazz, r);
+        return r;
+    }
+
+    public <U> void registerConstant(final Class<U> clazz, final U val) {
+        mockers.put(clazz, new Generator<U>() {
+
+            @Override
+            public U generate() {
+                return val;
+            }
+
+        });
     }
 }
