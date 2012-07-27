@@ -11,19 +11,19 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import no.uib.ii.mouldable.jaxt.runtime.generators.BooleanGenerator;
-import no.uib.ii.mouldable.jaxt.runtime.generators.DefaultObjectGenerator;
 import no.uib.ii.mouldable.jaxt.runtime.generators.DoubleGenerator;
 import no.uib.ii.mouldable.jaxt.runtime.generators.EnumGenerator;
-import no.uib.ii.mouldable.jaxt.runtime.generators.Generator;
+import no.uib.ii.mouldable.jaxt.runtime.generators.GenericObjectGenerator;
 import no.uib.ii.mouldable.jaxt.runtime.generators.IntegerGenerator;
 import no.uib.ii.mouldable.jaxt.runtime.generators.LongGenerator;
 import no.uib.ii.mouldable.jaxt.runtime.generators.SpecificObjectGenerator;
+import no.uib.ii.mouldable.jaxt.runtime.generators.StringGenerator;
 
-public class JaxtMockery implements Mockery {
+public class JaxtMockery implements GenericGenerator {
 
-    private final Map<Class<?>, Generator<?>> mockers = new HashMap<Class<?>, Generator<?>>();
+    private final Map<Class<?>, SpecificGenerator<?>> mockers = new HashMap<Class<?>, SpecificGenerator<?>>();
     private EnumGenerator enumMocker;
-    private DefaultObjectGenerator objectMocker;
+    private GenericObjectGenerator objectMocker;
 
     public JaxtMockery() {
         mockers.put(long.class, new LongGenerator());
@@ -31,28 +31,30 @@ public class JaxtMockery implements Mockery {
         mockers.put(boolean.class, new BooleanGenerator());
         mockers.put(int.class, new IntegerGenerator());
 
-        mockers.put(String.class, new Generator<String>() {
-            @Override
-            public String generate() {
-                return "/this string is random";
-            }
-        });
+        mockers.put(String.class, new StringGenerator());
 
-        mockers.put(Collection.class, new Generator<Collection<?>>() {
+        mockers.put(Collection.class, new SpecificGenerator<Collection<?>>() {
             @Override
-            public Collection<?> generate() {
+            public Collection<?> yield() {
                 return Arrays.asList();
+            }
+
+            @Override
+            public Class<Collection<?>> getType() {
+                @SuppressWarnings({ "unchecked" })
+                Class<Collection<?>> r = (Class<Collection<?>>) (Object) Collection.class;
+                return r;
             }
         });
         enumMocker = new EnumGenerator();
-        objectMocker = new DefaultObjectGenerator(this);
+        objectMocker = new GenericObjectGenerator(this);
     }
 
     @Override
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    public <T> T mock(final Class<T> clazz) {
+    public <T> T yield(final Class<T> clazz) {
         if (mockers.containsKey(clazz))
-            return (T) mockers.get(clazz).generate();
+            return (T) mockers.get(clazz).yield();
         if (Enum.class.isAssignableFrom(clazz)) {
             return (T) enumMocker.generate((Class) clazz);
         }
@@ -60,10 +62,10 @@ public class JaxtMockery implements Mockery {
             throw new IllegalArgumentException("Cannot instantiate interface '" + clazz.getName()
                     + "' because no concrete class has been registered for it");
         }
-        return objectMocker.generate(clazz);
+        return objectMocker.yield(clazz);
     }
 
-    public <T> void registerGenerator(final Class<T> clazz, final Generator<T> integerGenerator) {
+    public <T> void registerGenerator(final Class<T> clazz, final SpecificGenerator<T> integerGenerator) {
         mockers.put(clazz, integerGenerator);
     }
 
@@ -74,13 +76,23 @@ public class JaxtMockery implements Mockery {
     }
 
     public <U> void registerConstant(final Class<U> clazz, final U val) {
-        mockers.put(clazz, new Generator<U>() {
+        mockers.put(clazz, new SpecificGenerator<U>() {
 
             @Override
-            public U generate() {
+            public U yield() {
                 return val;
+            }
+
+            @Override
+            public Class<U> getType() {
+                return clazz;
             }
 
         });
     }
+
+    public GenericObjectGenerator newScope() {
+        return new GenericObjectGenerator(this);
+    }
+
 }
