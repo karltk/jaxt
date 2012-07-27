@@ -31,7 +31,7 @@ public class ClassHierarchyAwareObjectGenerator<U> implements SpecificGenerator<
 
     @Override
     public U yield() {
-        int max = allKnownSubclasses.size();/*
+        int max = allKnownSubclasses.size();
 
         @SuppressWarnings("unchecked")
         Class<U> selected = (Class<U>) allKnownSubclasses.get((int) (Math.random() * max));
