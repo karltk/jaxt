@@ -6,11 +6,17 @@
 
 package no.uib.ii.mouldable.jaxt.runtime.generators;
 
-public class DoubleGenerator implements Generator<Double> {
+import no.uib.ii.mouldable.jaxt.runtime.SpecificGenerator;
+
+public class DoubleGenerator implements SpecificGenerator<Double> {
 
     @Override
-    public Double generate() {
+    public Double yield() {
         return Math.random();
     }
 
+    @Override
+    public Class<Double> getType() {
+        return double.class;
+    }
 }

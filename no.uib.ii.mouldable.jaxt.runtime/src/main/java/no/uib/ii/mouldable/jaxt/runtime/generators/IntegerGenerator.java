@@ -6,7 +6,9 @@
 
 package no.uib.ii.mouldable.jaxt.runtime.generators;
 
-public class IntegerGenerator implements TypeAwareGenerator<Integer> {
+import no.uib.ii.mouldable.jaxt.runtime.SpecificGenerator;
+
+public class IntegerGenerator implements SpecificGenerator<Integer> {
 
     private final int maxValue;
     private final int minValue;
@@ -24,7 +26,7 @@ public class IntegerGenerator implements TypeAwareGenerator<Integer> {
     }
 
     @Override
-    public Integer generate() {
+    public Integer yield() {
         return new Integer((int) (Math.random() * (maxValue - minValue) + minValue));
     }
 

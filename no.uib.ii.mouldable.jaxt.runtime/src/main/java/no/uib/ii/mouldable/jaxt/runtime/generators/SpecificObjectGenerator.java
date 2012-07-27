@@ -6,33 +6,38 @@
 
 package no.uib.ii.mouldable.jaxt.runtime.generators;
 
-import no.uib.ii.mouldable.jaxt.runtime.Mockery;
+import no.uib.ii.mouldable.jaxt.runtime.GenericGenerator;
+import no.uib.ii.mouldable.jaxt.runtime.SpecificGenerator;
 
-public class SpecificObjectGenerator<T> implements Generator<T> {
+public class SpecificObjectGenerator<T> implements SpecificGenerator<T> {
 
-    private final Class<?> evidence;
-    private final DefaultObjectGenerator generator;
+    private final Class<T> evidence;
+    private final GenericObjectGenerator generator;
 
-    public SpecificObjectGenerator(final Mockery mockery, final Class<?> evidence) {
+    public SpecificObjectGenerator(final GenericGenerator mockery, final Class<T> evidence) {
         this.evidence = evidence;
-        generator = new DefaultObjectGenerator(mockery);
+        generator = new GenericObjectGenerator(mockery);
 
     }
 
-    @SuppressWarnings("unchecked")
     @Override
-    public T generate() {
-        return (T) generator.generate(evidence);
+    public T yield() {
+        return generator.yield(evidence);
     }
 
     public <U, V extends U> SpecificObjectGenerator<T> using(final Class<U> clazz,
-                                                             final Generator<V> specificGenerator) {
-        generator.override(clazz, specificGenerator);
+                                                             final SpecificGenerator<V> specificGenerator) {
+        generator.using(clazz, specificGenerator);
         return this;
     }
 
-    public <U> SpecificObjectGenerator<T> using(final TypeAwareGenerator<U> specificGenerator) {
-        generator.override(specificGenerator.getType(), specificGenerator);
+    public <U> SpecificObjectGenerator<T> using(final SpecificGenerator<U> specificGenerator) {
+        generator.using(specificGenerator.getType(), specificGenerator);
         return this;
+    }
+
+    @Override
+    public Class<T> getType() {
+        return evidence;
     }
 }

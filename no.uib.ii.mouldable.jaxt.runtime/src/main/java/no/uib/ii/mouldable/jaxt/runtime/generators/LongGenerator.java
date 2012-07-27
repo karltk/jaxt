@@ -6,12 +6,19 @@
 
 package no.uib.ii.mouldable.jaxt.runtime.generators;
 
-public class LongGenerator implements Generator<Long> {
+import no.uib.ii.mouldable.jaxt.runtime.SpecificGenerator;
+
+public class LongGenerator implements SpecificGenerator<Long> {
 
     @Override
-    public Long generate() {
+    public Long yield() {
         // FIXME this is not uniform by a long shot
         return Double.doubleToLongBits(Math.random());
+    }
+
+    @Override
+    public Class<Long> getType() {
+        return long.class;
     }
 
 }

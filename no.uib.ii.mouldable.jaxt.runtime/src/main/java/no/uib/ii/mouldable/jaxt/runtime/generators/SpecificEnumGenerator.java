@@ -6,7 +6,9 @@
 
 package no.uib.ii.mouldable.jaxt.runtime.generators;
 
-public class SpecificEnumGenerator<T extends Enum<T>> implements Generator<T> {
+import no.uib.ii.mouldable.jaxt.runtime.SpecificGenerator;
+
+public class SpecificEnumGenerator<T extends Enum<T>> implements SpecificGenerator<T> {
 
     private final EnumGenerator generator = new EnumGenerator();
     private final Class<T> evidence;
@@ -17,12 +19,17 @@ public class SpecificEnumGenerator<T extends Enum<T>> implements Generator<T> {
 
     @SuppressWarnings("unchecked")
     @Override
-    public T generate() {
+    public T yield() {
         return (T) generator.generate(evidence);
     }
 
-    public static <U extends Enum<U>> Generator<U> using(final Class<U> clazz) {
+    public static <U extends Enum<U>> SpecificGenerator<U> using(final Class<U> clazz) {
         return new SpecificEnumGenerator<U>(clazz);
+    }
+
+    @Override
+    public Class<T> getType() {
+        return evidence;
     }
 
 }

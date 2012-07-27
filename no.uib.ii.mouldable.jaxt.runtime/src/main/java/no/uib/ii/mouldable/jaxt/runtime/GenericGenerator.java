@@ -4,9 +4,9 @@
  * Licensed under the GNU Lesser General Public License v2.1
  */
 
-package no.uib.ii.mouldable.jaxt.runtime.generators;
+package no.uib.ii.mouldable.jaxt.runtime;
 
-public interface Generator<T> {
+public interface GenericGenerator {
 
-    T generate();
+    <T> T yield(Class<T> clazz);
 }

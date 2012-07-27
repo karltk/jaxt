@@ -4,9 +4,11 @@
  * Licensed under the GNU Lesser General Public License v2.1
  */
 
-package no.uib.ii.mouldable.jaxt.runtime.generators;
+package no.uib.ii.mouldable.jaxt.runtime;
 
-public interface TypeAwareGenerator<T> extends Generator<T> {
+public interface SpecificGenerator<T> {
+
+    T yield();
 
     Class<T> getType();
 }

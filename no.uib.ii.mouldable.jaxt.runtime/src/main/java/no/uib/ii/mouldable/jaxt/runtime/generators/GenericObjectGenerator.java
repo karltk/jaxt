@@ -12,30 +12,33 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
-import no.uib.ii.mouldable.jaxt.runtime.Mockery;
+import no.uib.ii.mouldable.jaxt.runtime.GenericGenerator;
+import no.uib.ii.mouldable.jaxt.runtime.SpecificGenerator;
 
-public class DefaultObjectGenerator {
+public class GenericObjectGenerator implements GenericGenerator {
 
-    private final Mockery mockery;
-    private final Map<Class<?>, Generator<?>> overrides = new HashMap<Class<?>, Generator<?>>();
+    private final GenericGenerator parent;
+    private final Map<Class<?>, SpecificGenerator<?>> overrides =
+            new HashMap<Class<?>, SpecificGenerator<?>>();
 
-    public DefaultObjectGenerator(final Mockery mockery) {
-        this.mockery = mockery;
+    public GenericObjectGenerator(final GenericGenerator parent) {
+        this.parent = parent;
     }
 
-    public <U, T extends U> DefaultObjectGenerator
-            override(final Class<U> clazz, final Generator<T> generator) {
+    public <U, T extends U> GenericObjectGenerator using(final Class<U> clazz,
+                                                         final SpecificGenerator<T> generator) {
         overrides.put(clazz, generator);
         return this;
     }
 
+    @Override
     @SuppressWarnings("unchecked")
-    public <T> T generate(final Class<T> clazz) {
+    public <T> T yield(final Class<T> clazz) {
         for (Constructor<?> c : clazz.getConstructors()) {
             try {
                 Collection<Object> args = new LinkedList<Object>();
                 for (Class<?> param : c.getParameterTypes()) {
-                    Object val = mock(param);
+                    Object val = forward(param);
                     args.add(val);
                 }
                 // System.out.println(c.getName() + args);
@@ -53,10 +56,10 @@ public class DefaultObjectGenerator {
         return null;
     }
 
-    private Object mock(final Class<?> param) {
+    private Object forward(final Class<?> param) {
         if (overrides.containsKey(param))
-            return overrides.get(param).generate();
-        return mockery.mock(param);
+            return overrides.get(param).yield();
+        return parent.yield(param);
     }
 
 }
