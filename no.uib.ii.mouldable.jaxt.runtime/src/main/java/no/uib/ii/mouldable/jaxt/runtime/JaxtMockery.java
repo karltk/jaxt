@@ -1,5 +1,7 @@
 /*
- * Copyright (c) 2010-2012, KolibriFX AS. All rights reserved.
+ * Copyright (c) 2012, Karl Trygve Kalleberg <karltk at boblycat dot org>
+ * 
+ * Licensed under the GNU Lesser General Public License v2.1
  */
 
 package no.uib.ii.mouldable.jaxt.runtime;
@@ -11,6 +13,12 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
+import no.uib.ii.mouldable.jaxt.runtime.generators.BooleanGenerator;
+import no.uib.ii.mouldable.jaxt.runtime.generators.DoubleGenerator;
+import no.uib.ii.mouldable.jaxt.runtime.generators.EnumGenerator;
+import no.uib.ii.mouldable.jaxt.runtime.generators.Generator;
+import no.uib.ii.mouldable.jaxt.runtime.generators.IntegerGenerator;
+import no.uib.ii.mouldable.jaxt.runtime.generators.LongGenerator;
 
 public class JaxtMockery {
 
@@ -18,37 +26,10 @@ public class JaxtMockery {
     private EnumGenerator enumMocker;
 
     public JaxtMockery() {
-        mockers.put(long.class, new Generator<Long>() {
-
-            @Override
-            public Long generate() {
-                return new Long(1);
-            }
-        });
-
-        mockers.put(double.class, new Generator<Double>() {
-
-            @Override
-            public Double generate() {
-                return new Double(0);
-            }
-        });
-
-        mockers.put(boolean.class, new Generator<Boolean>() {
-
-            @Override
-            public Boolean generate() {
-                return new Boolean(true);
-            }
-        });
-
-        mockers.put(int.class, new Generator<Integer>() {
-
-            @Override
-            public Integer generate() {
-                return new Integer(0);
-            }
-        });
+        mockers.put(long.class, new LongGenerator());
+        mockers.put(double.class, new DoubleGenerator());
+        mockers.put(boolean.class, new BooleanGenerator());
+        mockers.put(int.class, new IntegerGenerator());
 
         mockers.put(String.class, new Generator<String>() {
             @Override
@@ -94,5 +75,9 @@ public class JaxtMockery {
             }
         }
         return null;
+    }
+
+    public <T> void registerGenerator(final Class<T> clazz, final Generator<T> integerGenerator) {
+        mockers.put(clazz, integerGenerator);
     }
 }

@@ -1,0 +1,14 @@
+/*
+ * Copyright (c) 2010-2012, KolibriFX AS. All rights reserved.
+ */
+
+package no.uib.ii.mouldable.jaxt.runtime.generators;
+
+public class DoubleGenerator implements Generator<Double> {
+
+    @Override
+    public Double generate() {
+        return Math.random();
+    }
+
+}
