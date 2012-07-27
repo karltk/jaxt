@@ -1,5 +1,7 @@
 /*
- * Copyright (c) 2010-2012, KolibriFX AS. All rights reserved.
+ * Copyright (c) 2012, Karl Trygve Kalleberg <karltk at boblycat dot org>
+ * 
+ * Licensed under the GNU Lesser General Public License v2.1
  */
 
 package no.uib.ii.mouldable.jaxt.runtime.generators;
@@ -29,7 +31,8 @@ public class ClassHierarchyAwareObjectGenerator<U> implements SpecificGenerator<
 
     @Override
     public U yield() {
-        int max = allKnownSubclasses.size();
+        int max = allKnownSubclasses.size();/*
+
         @SuppressWarnings("unchecked")
         Class<U> selected = (Class<U>) allKnownSubclasses.get((int) (Math.random() * max));
         return generator.yield(selected);
