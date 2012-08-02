@@ -7,6 +7,9 @@
 package no.uib.ii.mouldable.jaxt.runtime;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import no.uib.ii.mouldable.jaxt.runtime.generators.ClassHierarchyAwareObjectGenerator;
+import no.uib.ii.mouldable.jaxt.runtime.generators.GenericObjectGenerator;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -27,6 +30,23 @@ public class TestRootGenerator {
         assertEquals(Long.class, rootGenerator.yield(long.class).getClass());
         assertEquals(Float.class, rootGenerator.yield(float.class).getClass());
         assertEquals(Double.class, rootGenerator.yield(double.class).getClass());
+    }
+
+    @Test
+    public void testNewScope() {
+        GenericObjectGenerator scope = rootGenerator.newScope();
+        Integer i = new Integer(10);
+        scope.generate(Object.class).as(i);
+
+        assertEquals(i, scope.yield(Object.class));
+    }
+
+    @Test
+    public void testNewScopeAndClassHierarchyGenerator() {
+        GenericObjectGenerator scope = rootGenerator.newScope();
+        scope.generate(Object.class).using(ClassHierarchyAwareObjectGenerator.from(A.class, rootGenerator));
+
+        assertTrue(A.class.isAssignableFrom(scope.yield(Object.class).getClass()));
     }
 
 }
