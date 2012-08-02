@@ -57,4 +57,13 @@ public class TestRootGenerator {
         assertTrue(A.class.isAssignableFrom(scope.yield(Object.class).getClass()));
     }
 
+    @Test
+    public void testNewScopeAndClassHierarchyGeneratorWithOverrideInRoot() {
+        GenericObjectGenerator scope = rootGenerator.newScope();
+        rootGenerator.generate(Z.class).as(Z.create());
+        scope.generate(Object.class).using(ClassHierarchyAwareObjectGenerator.from(E.class, scope));
+
+        assertTrue(E.class.isAssignableFrom(scope.yield(Object.class).getClass()));
+    }
+
 }
