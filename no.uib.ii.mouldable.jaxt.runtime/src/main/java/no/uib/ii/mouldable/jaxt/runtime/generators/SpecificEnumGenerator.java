@@ -6,6 +6,7 @@
 
 package no.uib.ii.mouldable.jaxt.runtime.generators;
 
+import java.lang.annotation.Annotation;
 import no.uib.ii.mouldable.jaxt.runtime.SpecificGenerator;
 
 public class SpecificEnumGenerator<T extends Enum<T>> implements SpecificGenerator<T> {
@@ -19,7 +20,7 @@ public class SpecificEnumGenerator<T extends Enum<T>> implements SpecificGenerat
 
     @SuppressWarnings("unchecked")
     @Override
-    public T yield() {
+    public T yield(final Annotation annotation) {
         return (T) generator.instantiate(evidence);
     }
 

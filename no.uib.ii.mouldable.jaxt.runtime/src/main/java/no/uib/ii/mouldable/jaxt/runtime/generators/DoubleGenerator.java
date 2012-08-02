@@ -6,12 +6,13 @@
 
 package no.uib.ii.mouldable.jaxt.runtime.generators;
 
+import java.lang.annotation.Annotation;
 import no.uib.ii.mouldable.jaxt.runtime.SpecificGenerator;
 
 public class DoubleGenerator implements SpecificGenerator<Double> {
 
     @Override
-    public Double yield() {
+    public Double yield(final Annotation annotation) {
         return Math.random();
     }
 

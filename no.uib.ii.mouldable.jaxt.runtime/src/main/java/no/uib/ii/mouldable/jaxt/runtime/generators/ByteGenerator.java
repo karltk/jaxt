@@ -6,12 +6,13 @@
 
 package no.uib.ii.mouldable.jaxt.runtime.generators;
 
+import java.lang.annotation.Annotation;
 import no.uib.ii.mouldable.jaxt.runtime.SpecificGenerator;
 
 public class ByteGenerator implements SpecificGenerator<Byte> {
 
     @Override
-    public Byte yield() {
+    public Byte yield(final Annotation annotation) {
         return (byte) (Math.random() * 255);
     }
 

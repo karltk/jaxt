@@ -6,6 +6,7 @@
 
 package no.uib.ii.mouldable.jaxt.runtime.generators;
 
+import java.lang.annotation.Annotation;
 import no.uib.ii.mouldable.jaxt.runtime.GenericGenerator;
 import no.uib.ii.mouldable.jaxt.runtime.SpecificGenerator;
 
@@ -21,7 +22,7 @@ public class SpecificObjectGenerator<T> implements SpecificGenerator<T> {
     }
 
     @Override
-    public T yield() {
+    public T yield(final Annotation annotation) {
         if (yieldConstant == null)
             return Instantiator.instantiateClass(evidence, innerGenerator);
         return yieldConstant;

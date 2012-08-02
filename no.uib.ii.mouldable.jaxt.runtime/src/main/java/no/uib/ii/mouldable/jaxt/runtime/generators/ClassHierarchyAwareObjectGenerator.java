@@ -7,6 +7,7 @@
 package no.uib.ii.mouldable.jaxt.runtime.generators;
 
 import java.io.IOException;
+import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import no.uib.ii.mouldable.jaxt.runtime.GenericGenerator;
 import no.uib.ii.mouldable.jaxt.runtime.ReflectionUtils;
@@ -30,12 +31,12 @@ public class ClassHierarchyAwareObjectGenerator<U> implements SpecificGenerator<
     }
 
     @Override
-    public U yield() {
+    public U yield(final Annotation annotation) {
         int max = allKnownSubclasses.size();
 
         @SuppressWarnings("unchecked")
         Class<U> selected = (Class<U>) allKnownSubclasses.get((int) (Math.random() * max));
-        return generator.yield(selected);
+        return generator.yield(selected, null);
     }
 
     public static <T> ClassHierarchyAwareObjectGenerator<T> from(final Class<T> clazz,

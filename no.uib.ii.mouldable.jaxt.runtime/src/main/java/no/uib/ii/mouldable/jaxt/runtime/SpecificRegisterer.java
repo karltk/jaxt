@@ -6,6 +6,7 @@
 
 package no.uib.ii.mouldable.jaxt.runtime;
 
+import java.lang.annotation.Annotation;
 import no.uib.ii.mouldable.jaxt.runtime.generators.GeneratorOverrideLayer;
 
 public class SpecificRegisterer<T> {
@@ -26,7 +27,7 @@ public class SpecificRegisterer<T> {
         innerGenerator.registerOverride(clazz, new SpecificGenerator<T>() {
 
             @Override
-            public T yield() {
+            public T yield(final Annotation annotation) {
                 return val;
             }
 

@@ -6,9 +6,11 @@
 
 package no.uib.ii.mouldable.jaxt.runtime;
 
+import java.lang.annotation.Annotation;
+
 public interface SpecificGenerator<T> {
 
-    T yield();
+    T yield(Annotation annotation);
 
     Class<T> getType();
 }

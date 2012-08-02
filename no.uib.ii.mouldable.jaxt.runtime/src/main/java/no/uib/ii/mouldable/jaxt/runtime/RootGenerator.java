@@ -6,6 +6,7 @@
 
 package no.uib.ii.mouldable.jaxt.runtime;
 
+import java.lang.annotation.Annotation;
 import java.util.Arrays;
 import java.util.Collection;
 import no.uib.ii.mouldable.jaxt.runtime.generators.BooleanGenerator;
@@ -30,7 +31,7 @@ public class RootGenerator extends GenericObjectGenerator {
         generate(String.class).using(new StringGenerator());
         generate(Collection.class).using(new SpecificGenerator<Collection<?>>() {
             @Override
-            public Collection<?> yield() {
+            public Collection<?> yield(final Annotation annotation) {
                 return Arrays.asList();
             }
 
@@ -53,8 +54,8 @@ public class RootGenerator extends GenericObjectGenerator {
         generate(clazz).using(new SpecificGenerator<T>() {
 
             @Override
-            public T yield() {
-                return gg.yield(clazz);
+            public T yield(final Annotation annotation) {
+                return gg.yield(clazz, annotation);
             }
 
             @Override

@@ -6,12 +6,13 @@
 
 package no.uib.ii.mouldable.jaxt.runtime.generators;
 
+import java.lang.annotation.Annotation;
 import no.uib.ii.mouldable.jaxt.runtime.SpecificGenerator;
 
 public class BooleanGenerator implements SpecificGenerator<Boolean> {
 
     @Override
-    public Boolean yield() {
+    public Boolean yield(final Annotation annotation) {
         return Math.random() > 0.5 ? true : false;
     }
 

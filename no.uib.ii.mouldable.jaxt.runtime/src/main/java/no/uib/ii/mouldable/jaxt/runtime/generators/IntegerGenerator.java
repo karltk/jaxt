@@ -6,6 +6,7 @@
 
 package no.uib.ii.mouldable.jaxt.runtime.generators;
 
+import java.lang.annotation.Annotation;
 import no.uib.ii.mouldable.jaxt.runtime.SpecificGenerator;
 
 public class IntegerGenerator implements SpecificGenerator<Integer> {
@@ -26,7 +27,7 @@ public class IntegerGenerator implements SpecificGenerator<Integer> {
     }
 
     @Override
-    public Integer yield() {
+    public Integer yield(final Annotation annotation) {
         return new Integer((int) (Math.random() * (maxValue - minValue) + minValue));
     }
 

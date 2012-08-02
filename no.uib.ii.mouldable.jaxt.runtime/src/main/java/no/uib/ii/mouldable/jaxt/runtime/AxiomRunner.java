@@ -9,6 +9,7 @@ package no.uib.ii.mouldable.jaxt.runtime;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
 import jaxt.framework.Axioms;
@@ -25,6 +26,7 @@ public class AxiomRunner {
         throws IllegalArgumentException, IllegalAccessException, InvocationTargetException {
         for (Method m : axiomClass.getDeclaredMethods()) {
             Collection<Object> actualArgs = new LinkedList<Object>();
+            System.out.println("" + m + Arrays.asList(m.getParameterTypes()));
             for (Class<?> c : m.getParameterTypes()) {
                 Annotation a = null;
                 // FIXME deal with multiple annotations

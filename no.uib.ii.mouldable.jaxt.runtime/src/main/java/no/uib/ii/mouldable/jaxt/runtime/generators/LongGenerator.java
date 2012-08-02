@@ -6,12 +6,13 @@
 
 package no.uib.ii.mouldable.jaxt.runtime.generators;
 
+import java.lang.annotation.Annotation;
 import no.uib.ii.mouldable.jaxt.runtime.SpecificGenerator;
 
 public class LongGenerator implements SpecificGenerator<Long> {
 
     @Override
-    public Long yield() {
+    public Long yield(final Annotation annotation) {
         // FIXME this is not uniform by a long shot
         return Double.doubleToLongBits(Math.random());
     }

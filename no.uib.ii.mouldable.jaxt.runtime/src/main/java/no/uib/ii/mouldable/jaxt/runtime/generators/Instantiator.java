@@ -24,7 +24,7 @@ public class Instantiator {
                 Collection<Object> args = new LinkedList<Object>();
                 System.out.println("" + clazz + Arrays.asList(c.getParameterTypes()));
                 for (Class<?> param : c.getParameterTypes()) {
-                    Object val = generator.yield(param);
+                    Object val = generator.yield(param, null);
                     args.add(val);
                 }
                 System.out.println(c.getName() + args);
@@ -39,7 +39,7 @@ public class Instantiator {
                 e.printStackTrace();
             }
         }
-        return generator.yield(clazz);
+        return generator.yield(clazz, null);
     }
 
     public static <T extends Enum<T>> Enum<T> instantiateEnum(final Class<T> clazz) {

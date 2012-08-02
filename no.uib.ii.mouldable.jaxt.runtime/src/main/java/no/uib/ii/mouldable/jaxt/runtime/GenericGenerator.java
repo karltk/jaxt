@@ -10,7 +10,5 @@ import java.lang.annotation.Annotation;
 
 public interface GenericGenerator {
 
-    <T> T yield(Class<T> clazz);
-
     <T> T yield(Class<T> clazz, Annotation declaredAnnotation);
 }

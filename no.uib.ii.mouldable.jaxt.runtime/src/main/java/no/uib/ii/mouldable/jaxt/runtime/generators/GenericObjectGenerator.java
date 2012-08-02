@@ -25,7 +25,6 @@ public class GenericObjectGenerator implements GenericGenerator {
         return this;
     }
 
-    @Override
     public <T> T yield(final Class<T> clazz) {
         return yield(clazz, null);
     }
@@ -36,7 +35,7 @@ public class GenericObjectGenerator implements GenericGenerator {
         if (innerGenerator.hasOverrideFor(clazz, annotation))
             return innerGenerator.yield(clazz, annotation);
         if (clazz.isPrimitive())
-            throw new RuntimeException("No registered generator for " + clazz);
+            innerGenerator.yield(clazz, annotation);
         if (Enum.class.isAssignableFrom(clazz))
             Instantiator.instantiateEnum((Class) clazz);
         if (clazz.isInterface())

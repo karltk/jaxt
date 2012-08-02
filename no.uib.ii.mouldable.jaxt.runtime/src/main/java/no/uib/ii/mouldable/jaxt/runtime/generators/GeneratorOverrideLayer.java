@@ -24,11 +24,6 @@ public class GeneratorOverrideLayer implements GenericGenerator {
         this.parent = parent;
     }
 
-    @Override
-    public <T> T yield(final Class<T> clazz) {
-        return yield(clazz, null);
-    }
-
     public boolean hasOverrideFor(final Class<?> clazz, final Annotation a) {
         return overrides.containsKey(ImmutablePair.of(clazz, a));
     }
@@ -50,11 +45,11 @@ public class GeneratorOverrideLayer implements GenericGenerator {
     public <T> T yield(final Class<T> clazz, final Annotation annotation) {
         ImmutablePair<Class<T>, Annotation> lu = ImmutablePair.of(clazz, annotation);
         if (overrides.containsKey(lu))
-            return (T) overrides.get(lu).yield();
+            return (T) overrides.get(lu).yield(annotation);
         if (parent == null)
             throw new RuntimeException("Reached top of generator chain, and no appropriate generator for "
                     + clazz + " was found");
-        return parent.yield(clazz);
+        return parent.yield(clazz, annotation);
     }
 
     @Override
