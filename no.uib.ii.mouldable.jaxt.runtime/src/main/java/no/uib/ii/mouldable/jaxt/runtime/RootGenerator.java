@@ -17,9 +17,9 @@ import no.uib.ii.mouldable.jaxt.runtime.generators.IntegerGenerator;
 import no.uib.ii.mouldable.jaxt.runtime.generators.LongGenerator;
 import no.uib.ii.mouldable.jaxt.runtime.generators.StringGenerator;
 
-public class JaxtMockery extends GenericObjectGenerator {
+public class RootGenerator extends GenericObjectGenerator {
 
-    public JaxtMockery() {
+    public RootGenerator() {
         super(null);
         generate(byte.class).using(new ByteGenerator());
         generate(long.class).using(new LongGenerator());

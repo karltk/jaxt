@@ -12,11 +12,11 @@ import org.junit.Test;
 
 public class TestRootGenerator {
 
-    private JaxtMockery rootGenerator;
+    private RootGenerator rootGenerator;
 
     @Before
     public void setUp() {
-        rootGenerator = new JaxtMockery();
+        rootGenerator = new RootGenerator();
     }
 
     @Test
