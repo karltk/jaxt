@@ -9,7 +9,9 @@ package no.uib.ii.mouldable.jaxt.runtime;
 import java.util.Arrays;
 import java.util.Collection;
 import no.uib.ii.mouldable.jaxt.runtime.generators.BooleanGenerator;
+import no.uib.ii.mouldable.jaxt.runtime.generators.ByteGenerator;
 import no.uib.ii.mouldable.jaxt.runtime.generators.DoubleGenerator;
+import no.uib.ii.mouldable.jaxt.runtime.generators.FloatGenerator;
 import no.uib.ii.mouldable.jaxt.runtime.generators.GenericObjectGenerator;
 import no.uib.ii.mouldable.jaxt.runtime.generators.IntegerGenerator;
 import no.uib.ii.mouldable.jaxt.runtime.generators.LongGenerator;
@@ -19,7 +21,9 @@ public class JaxtMockery extends GenericObjectGenerator {
 
     public JaxtMockery() {
         super(null);
+        generate(byte.class).using(new ByteGenerator());
         generate(long.class).using(new LongGenerator());
+        generate(float.class).using(new FloatGenerator());
         generate(double.class).using(new DoubleGenerator());
         generate(boolean.class).using(new BooleanGenerator());
         generate(int.class).using(new IntegerGenerator());
