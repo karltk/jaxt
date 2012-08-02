@@ -19,11 +19,11 @@ public class GenericRegisterer<T> {
     }
 
     public <U> void using(final SpecificGenerator<U> contextOverride) {
-        innerGenerator.registerOverride(contextOverride.getType(), contextOverride);
+        innerGenerator.registerOverride(contextOverride.getType(), null, contextOverride);
     }
 
     public <U> SpecificRegisterer<U> generate(final Class<U> clazz) {
-        return new SpecificRegisterer<U>(clazz, innerGenerator);
+        return new SpecificRegisterer<U>(clazz, null, innerGenerator);
     }
 
 }

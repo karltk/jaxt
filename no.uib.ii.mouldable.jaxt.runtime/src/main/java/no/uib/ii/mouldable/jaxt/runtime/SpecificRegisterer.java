@@ -13,18 +13,22 @@ public class SpecificRegisterer<T> {
 
     private final Class<T> clazz;
     private final GeneratorOverrideLayer innerGenerator;
+    private final Annotation anno;
 
-    public SpecificRegisterer(final Class<T> clazz, final GeneratorOverrideLayer innerGenerator) {
+    public <U extends Annotation> SpecificRegisterer(final Class<T> clazz,
+                                                     final Annotation anno,
+                                                     final GeneratorOverrideLayer innerGenerator) {
         this.clazz = clazz;
+        this.anno = anno;
         this.innerGenerator = innerGenerator;
     }
 
     public <U extends T> void using(final SpecificGenerator<U> generator) {
-        innerGenerator.registerOverride(clazz, generator);
+        innerGenerator.registerOverride(clazz, anno, generator);
     }
 
     public void as(final T val) {
-        innerGenerator.registerOverride(clazz, new SpecificGenerator<T>() {
+        innerGenerator.registerOverride(clazz, anno, new SpecificGenerator<T>() {
 
             @Override
             public T yield(final Annotation annotation) {

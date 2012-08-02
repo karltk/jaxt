@@ -8,7 +8,6 @@ package no.uib.ii.mouldable.jaxt.runtime.generators;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
 import no.uib.ii.mouldable.jaxt.runtime.GenericGenerator;
@@ -22,21 +21,22 @@ public class Instantiator {
         for (Constructor<?> c : clazz.getConstructors()) {
             try {
                 Collection<Object> args = new LinkedList<Object>();
-                System.out.println("" + clazz + Arrays.asList(c.getParameterTypes()));
+                // System.out.println("" + clazz +
+                // Arrays.asList(c.getParameterTypes()));
                 for (Class<?> param : c.getParameterTypes()) {
                     Object val = generator.yield(param, null);
                     args.add(val);
                 }
-                System.out.println(c.getName() + args);
+                // System.out.println(c.getName() + args);
                 return (T) c.newInstance(args.toArray(new Object[0]));
             } catch (IllegalArgumentException e) {
-                e.printStackTrace();
+                // e.printStackTrace();
             } catch (InstantiationException e) {
-                e.printStackTrace();
+                // e.printStackTrace();
             } catch (IllegalAccessException e) {
-                e.printStackTrace();
+                // e.printStackTrace();
             } catch (InvocationTargetException e) {
-                e.printStackTrace();
+                // e.printStackTrace();
             }
         }
         return generator.yield(clazz, null);

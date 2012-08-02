@@ -7,6 +7,7 @@
 package no.uib.ii.mouldable.jaxt.runtime.generators;
 
 import java.lang.annotation.Annotation;
+import no.uib.ii.mouldable.jaxt.runtime.AnnotationHolder;
 import no.uib.ii.mouldable.jaxt.runtime.GenericGenerator;
 import no.uib.ii.mouldable.jaxt.runtime.SpecificGenerator;
 import no.uib.ii.mouldable.jaxt.runtime.SpecificRegisterer;
@@ -21,7 +22,7 @@ public class GenericObjectGenerator implements GenericGenerator {
 
     public <U, T extends U> GenericObjectGenerator using(final Class<U> clazz,
                                                          final SpecificGenerator<T> generator) {
-        innerGenerator.registerOverride(clazz, generator);
+        innerGenerator.registerOverride(clazz, null, generator);
         return this;
     }
 
@@ -46,7 +47,12 @@ public class GenericObjectGenerator implements GenericGenerator {
     }
 
     public <T> SpecificRegisterer<T> generate(final Class<T> clazz) {
-        return new SpecificRegisterer<T>(clazz, innerGenerator);
+        return new SpecificRegisterer<T>(clazz, null, innerGenerator);
+    }
+
+    public <T extends Annotation> SpecificRegisterer<Integer>
+            generate(final Class<Integer> clazz, final Class<? extends Annotation> anno) {
+        return new SpecificRegisterer<Integer>(clazz, new AnnotationHolder(anno), innerGenerator);
     }
 
 }

@@ -7,6 +7,7 @@
 package no.uib.ii.mouldable.jaxt.runtime.generators;
 
 import java.lang.annotation.Annotation;
+import jaxt.Repeat;
 import no.uib.ii.mouldable.jaxt.runtime.SpecificGenerator;
 
 public class IntegerGenerator implements SpecificGenerator<Integer> {
@@ -28,6 +29,8 @@ public class IntegerGenerator implements SpecificGenerator<Integer> {
 
     @Override
     public Integer yield(final Annotation annotation) {
+        if (annotation != null && Repeat.class.equals(annotation.annotationType()))
+            return 4;
         return new Integer((int) (Math.random() * (maxValue - minValue) + minValue));
     }
 

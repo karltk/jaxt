@@ -31,18 +31,18 @@ public class SpecificObjectGenerator<T> implements SpecificGenerator<T> {
 
     public <U, V extends U> SpecificObjectGenerator<T> using(final Class<U> clazz,
                                                              final SpecificGenerator<V> specificGenerator) {
-        innerGenerator.registerOverride(clazz, specificGenerator);
+        innerGenerator.registerOverride(clazz, null, specificGenerator);
         return this;
     }
 
     public <U> SpecificObjectGenerator<T> using(final SpecificGenerator<U> specificGenerator) {
-        innerGenerator.registerOverride(specificGenerator.getType(), specificGenerator);
+        innerGenerator.registerOverride(specificGenerator.getType(), null, specificGenerator);
         return this;
     }
 
     public <U> SpecificObjectGenerator<U> generate(final Class<U> clazz) {
         SpecificObjectGenerator<U> r = new SpecificObjectGenerator<U>(innerGenerator, clazz);
-        innerGenerator.registerOverride(clazz, r);
+        innerGenerator.registerOverride(clazz, null, r);
         return r;
     }
 
