@@ -6,6 +6,7 @@
 
 package no.uib.ii.mouldable.jaxt.runtime;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Collection;
@@ -25,7 +26,11 @@ public class AxiomRunner {
         for (Method m : axiomClass.getDeclaredMethods()) {
             Collection<Object> actualArgs = new LinkedList<Object>();
             for (Class<?> c : m.getParameterTypes()) {
-                actualArgs.add(generator.yield(c));
+                Annotation a = null;
+                // FIXME deal with multiple annotations
+                if (m.getDeclaredAnnotations().length > 0)
+                    a = m.getDeclaredAnnotations()[0];
+                actualArgs.add(generator.yield(c, a));
             }
             System.out.println("" + m + actualArgs);
             m.invoke(null, actualArgs.toArray(new Object[0]));
