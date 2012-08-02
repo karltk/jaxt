@@ -5,7 +5,7 @@ repositories.remote << 'http://repo1.maven.org/maven2/'
 
 define 'no.uib.ii.mouldable' do
 
-  project.version = "0.1.1"
+  project.version = "0.1.2"
   eclipse.options.short_names = true
   
   define 'no.uib.ii.mouldable.jaxt.runtime' do
