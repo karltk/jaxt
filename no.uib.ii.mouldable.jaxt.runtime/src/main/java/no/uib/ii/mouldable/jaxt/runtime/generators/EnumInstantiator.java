@@ -10,9 +10,9 @@ import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.LinkedList;
 
-public class EnumGenerator {
+public class EnumInstantiator {
 
-    public <T extends Enum<T>> Enum<T> generate(final Class<T> clazz) {
+    public <T extends Enum<T>> Enum<T> instantiate(final Class<T> clazz) {
         Collection<Field> candidates = new LinkedList<Field>();
         for (Field f : clazz.getDeclaredFields()) {
             if (clazz.isAssignableFrom(f.getType()))
