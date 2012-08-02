@@ -6,6 +6,12 @@
 
 package no.uib.ii.mouldable.jaxt.runtime;
 
-public class A {
+public class D {
 
+    private D(final int val) {
+    }
+
+    public static D make(final int val) {
+        return new D(val);
+    }
 }

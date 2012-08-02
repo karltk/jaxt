@@ -42,6 +42,14 @@ public class TestRootGenerator {
     }
 
     @Test
+    public void testNewScopeWithParentOverrides() {
+        D d = D.make(10);
+        rootGenerator.generate(D.class).as(d);
+
+        assertEquals(d, rootGenerator.newScope().yield(D.class));
+    }
+
+    @Test
     public void testNewScopeAndClassHierarchyGenerator() {
         GenericObjectGenerator scope = rootGenerator.newScope();
         scope.generate(Object.class).using(ClassHierarchyAwareObjectGenerator.from(A.class, rootGenerator));
