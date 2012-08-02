@@ -6,60 +6,48 @@
 
 package no.uib.ii.mouldable.jaxt.runtime.generators;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Map;
+import java.lang.annotation.Annotation;
 import no.uib.ii.mouldable.jaxt.runtime.GenericGenerator;
 import no.uib.ii.mouldable.jaxt.runtime.SpecificGenerator;
+import no.uib.ii.mouldable.jaxt.runtime.SpecificRegisterer;
 
 public class GenericObjectGenerator implements GenericGenerator {
 
-    private final GenericGenerator parent;
-    private final Map<Class<?>, SpecificGenerator<?>> overrides =
-            new HashMap<Class<?>, SpecificGenerator<?>>();
+    private final GeneratorOverrideLayer innerGenerator;
 
     public GenericObjectGenerator(final GenericGenerator parent) {
-        this.parent = parent;
+        this.innerGenerator = new GeneratorOverrideLayer(parent);
     }
 
     public <U, T extends U> GenericObjectGenerator using(final Class<U> clazz,
                                                          final SpecificGenerator<T> generator) {
-        overrides.put(clazz, generator);
+        innerGenerator.registerOverride(clazz, generator);
         return this;
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public <T> T yield(final Class<T> clazz) {
-        for (Constructor<?> c : clazz.getConstructors()) {
-            try {
-                Collection<Object> args = new LinkedList<Object>();
-                for (Class<?> param : c.getParameterTypes()) {
-                    Object val = forward(param);
-                    args.add(val);
-                }
-                // System.out.println(c.getName() + args);
-                return (T) c.newInstance(args.toArray(new Object[0]));
-            } catch (IllegalArgumentException e) {
-                e.printStackTrace();
-            } catch (InstantiationException e) {
-                e.printStackTrace();
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            } catch (InvocationTargetException e) {
-                e.printStackTrace();
-            }
-        }
-        return null;
+        return yield(clazz, null);
     }
 
-    private Object forward(final Class<?> param) {
-        if (overrides.containsKey(param))
-            return overrides.get(param).yield();
-        return parent.yield(param);
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @Override
+    public <T> T yield(final Class<T> clazz, final Annotation annotation) {
+        if (innerGenerator.hasOverrideFor(clazz, annotation))
+            return innerGenerator.yield(clazz, annotation);
+        if (clazz.isPrimitive())
+            throw new RuntimeException("No registered generator for " + clazz);
+        if (Enum.class.isAssignableFrom(clazz))
+            Instantiator.instantiateEnum((Class) clazz);
+        if (clazz.isInterface())
+            throw new IllegalArgumentException("Cannot instantiate interface '" + clazz.getName()
+                    + "' because no concrete class has been registered for it");
+
+        return Instantiator.instantiateClass(clazz, innerGenerator);
+    }
+
+    public <T> SpecificRegisterer<T> generate(final Class<T> clazz) {
+        return new SpecificRegisterer<T>(clazz, innerGenerator);
     }
 
 }

@@ -10,7 +10,7 @@ import no.uib.ii.mouldable.jaxt.runtime.SpecificGenerator;
 
 public class SpecificEnumGenerator<T extends Enum<T>> implements SpecificGenerator<T> {
 
-    private final EnumGenerator generator = new EnumGenerator();
+    private final EnumInstantiator generator = new EnumInstantiator();
     private final Class<T> evidence;
 
     public SpecificEnumGenerator(final Class<T> evidence) {
@@ -20,10 +20,10 @@ public class SpecificEnumGenerator<T extends Enum<T>> implements SpecificGenerat
     @SuppressWarnings("unchecked")
     @Override
     public T yield() {
-        return (T) generator.generate(evidence);
+        return (T) generator.instantiate(evidence);
     }
 
-    public static <U extends Enum<U>> SpecificGenerator<U> using(final Class<U> clazz) {
+    public static <U extends Enum<U>> SpecificGenerator<U> forClass(final Class<U> clazz) {
         return new SpecificEnumGenerator<U>(clazz);
     }
 
